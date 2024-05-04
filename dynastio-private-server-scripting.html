@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="/assets/css/style.css?v=45b97266ebbbd3abee6d5a384a5c52ab42ec7c98">
+    </head>
+    <body>
+        <div class="container-lg px-3 my-5 markdown-body">
+            <p>
+                <em>This is an unofficial compilation of information from demo scripts and extra testing. I am not affiliated with dynast.io</em>
+            </p>
+            <h1 id="events">Events</h1>
+            <ul>
+                <li>
+                    <a href="#script-load">Script load</a>
+                </li>
+                <li>
+                    <a href="#collision-enter">Collision Enter</a>
+                </li>
+                <li>
+                    <a href="#collision-exit">Collision Exit</a>
+                </li>
+                <li>
+                    <a href="#chat-message">Chat message</a>
+                </li>
+                <li>
+                    <a href="#interaction">Interaction</a>
+                </li>
+                <li>
+                    <a href="#damage">Damage</a>
+                </li>
+                <li>
+                    <a href="#death">Death</a>
+                </li>
+            </ul>
+            <p>
+                A user-defined script with a specific name can be called when the scriptable entity is interacted with. Additional examples of these can be found in <code class="language-plaintext highlighter-rouge">/maps/demo/map.tmx</code>
+                or <code class="language-plaintext highlighter-rouge">/maps/demo/scripts/</code>
+            </p>
+            <h3 id="script-load">
+                <a href="#events">Script load</a>
+            </h3>
+            <p>
+                Calls <code class="language-plaintext highlighter-rouge">init()</code>
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">init</span><span class="p">(){</span>
+    <span class="c1">//Functions that only need to run once can be used here</span>
+    <span class="c1">//In addition, variables to add to the global scope can be defined</span>
+    <span class="n">this</span><span class="py">.entity_image</span><span class="o"> = </span> <span class="s">"image1"</span><span class="p">;</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.set_entity_image</span><span class="p">(</span><span class="n">this</span><span class="py">.entity</span><span class="p">,</span><span class="n">this</span><span class="py">.entity_image</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="s">"Default"</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="k">fn</span> <span class="nf">some_other_function</span><span class="p">(){</span>
+    <span class="n">this</span><span class="py">.entity_image</span><span class="o">==</span><span class="s">"image1"</span><span class="c1"> //Returns True</span>
+<span class="p">}</span></code></pre>
+                </div>
+            </div>
+            <h3 id="collision-enter">
+                <a href="#events">Collision Enter</a>
+            </h3>
+            <p>
+                Calls <code class="language-plaintext highlighter-rouge">on_trigger_enter(source_entity)</code>
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">on_trigger_enter</span><span class="p">(</span><span class="n">a</span><span class="p">){</span>
+    <span class="c1">//This event is called when another entity's hitbox overlaps with this entity's</span>
+    <span class="c1">//Passes one argument, a reference to the entity that triggered it</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.broadcast_chat_message</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="s">"Collision Enter Event Triggered"</span><span class="p">);</span>
+<span class="p">}</span></code></pre>
+                </div>
+            </div>
+            <h3 id="collision-exit">
+                <a href="#events">Collision Exit</a>
+            </h3>
+            <p>
+                Calls <code class="language-plaintext highlighter-rouge">on_trigger_exit(source_entity)</code>
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">on_trigger_exit</span><span class="p">(</span><span class="n">a</span><span class="p">){</span>
+    <span class="c1">//This event is called when another entity's hitbox stops overlapping with this entity's</span>
+    <span class="c1">//Passes one argument, a reference to the entity that triggered it</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.broadcast_chat_message</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="s">"Collision Exit Event Triggered"</span><span class="p">);</span>
+<span class="p">}</span></code></pre>
+                </div>
+            </div>
+            <h3 id="chat-message">
+                <a href="#events">Chat message</a>
+            </h3>
+            <p>
+                Calls <code class="language-plaintext highlighter-rouge">on_chat_message(source_entity,message)</code>
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">on_chat_message</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">){</span>
+    <span class="c1">//This event is called when a chat message is sent near this entity</span>
+    <span class="c1">//Passes two arguments, a reference to the entity that triggered it and the message</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.broadcast_chat_message</span><span class="p">(</span><span class="n">this</span><span class="py">.entity</span><span class="p">,</span><span class="n">b</span><span class="p">);</span>
+<span class="p">}</span></code></pre>
+                </div>
+            </div>
+            <h3 id="interaction">
+                <a href="#events">Interaction</a>
+            </h3>
+            <p>
+                Calls <code class="language-plaintext highlighter-rouge">on_interact_event(source_entity)</code>
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">on_interact_event</span><span class="p">(</span><span class="n">a</span><span class="p">){</span>
+    <span class="c1">//This event is called when a player interacts with the entity (requires that the InteractComponent is set to True)</span>
+    <span class="c1">//Passes one argument, a reference to the entity that triggered it</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.broadcast_chat_message</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="s">"Interaction Event Triggered"</span><span class="p">);</span>
+<span class="p">}</span></code></pre>
+                </div>
+            </div>
+            <h3 id="damage">
+                <a href="#events">Damage</a>
+            </h3>
+            <p>
+                Calls <code class="language-plaintext highlighter-rouge">on_damage_event(source_entity,amount)</code>
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">on_damage_event</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">){</span>
+    <span class="c1">//This event is called when another entity damages this one (requires that this entity has a `Health` and `Damage` component)</span>
+    <span class="c1">//Passes one argument, a reference to the entity that triggered it and the amount of damage received</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.send_damage</span><span class="p">(</span><span class="n">this</span><span class="py">.entity</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">);</span>
+<span class="p">}</span></code></pre>
+                </div>
+            </div>
+            <h3 id="death">
+                <a href="#events">Death</a>
+            </h3>
+            <p>
+                Calls <code class="language-plaintext highlighter-rouge">on_death_event(source_entity)</code>
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">on_death_event</span><span class="p">(</span><span class="n">a</span><span class="p"){></span>
+    <span class="c1">//This event is called when this entity is killed</span>
+    <span class="c1">//Passes one argument, a reference to the entity that triggered it</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.broadcast_chat_message</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="s">"Death Event Triggered"</span><span class="p">);</span>
+<span class="p">}</span></code></pre>
+                </div>
+            </div>
+            <h1 id="entities">Entities</h1>
+            <ul>
+                <li>
+                    <a href="#get-entity-type">Get entity type</a>
+                </li>
+                <li>
+                    <a href="#get-entity-location">Get entity location</a>
+                </li>
+                <li>
+                    <a href="#set-entity-location">Set entity location</a>
+                </li>
+                <li>
+                    Player inventory
+    
+                    <ul>
+                        <li>
+                            <a href="#check-item">Check item</a>
+                        </li>
+                        <li>
+                            <a href="#give-item">Give item</a>
+                        </li>
+                        <li>
+                            <a href="#remove-item">Remove item</a>
+                        </li>
+                        <li>
+<a href="#remove-all-items">Remove all items</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#create-entity">Create entity</a>
+                </li>
+                <li>
+                    <a href="#send-damage">Send damage</a>
+                </li>
+            </ul>
+            <h3 id="get-entity-type">
+                <a href="#entities">Get entity type</a>
+            </h3>
+            <p>
+                <code class="language-plaintext highlighter-rouge">get_entity_type(target_entity)</code>
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">on_interact_event</span><span class="p">(</span><span class="n">a</span><span class="p">){</span>
+    <span class="c1">//Returns a string with the entity type</span>
+    <span class="c1">//Takes one parameter, a reference to the target entity</span>
+    <span class="k">let</span> <span class="n">target_entity</span> <span class="o">=</span> <span class="n">this</span><span class="py">.engine</span><span class="nf">.get_entity_type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.broadcast_chat_message</span><span class="p">(</span><span class="n">this</span><span class="py">.entity</span><span class="p">,</span><span class="n">target_entity</span><span class="p">);</span>
+<span class="p">}</span></code></pre>
+                </div>
+            </div>
+            <h3 id="get-entity-location">
+                <a href="#entities">Get entity location</a>
+            </h3>
+            <p>
+                <code class="language-plaintext highlighter-rouge">get_entity_position(target_entity)</code>
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">on_interact_event</span><span class="p">(</span><span class="n">a</span><span class="p">){</span>
+    <span class="c1">//Returns a rhai map with x and y coordinates of the target entity</span>
+    <span class="c1">//Takes one parameter, a reference to the target entity</span>
+    <span class="k">let</span> <span class="n">coordinates</span> <span class="o">=</span> <span class="n">this</span><span class="py">.engine</span><span class="nf">.get_entity_position</span><span class="p">();</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.broadcast_chat_message</span><span class="p">(</span><span class="n">this</span><span class="py">.entity</span><span class="p">,</span><span class="p">`$</span><span class="p">{</span><span class="n">coordinates</span><span class="p">}</span><span class="p">`</span><span class="p">);</span>
+<span class="p">}</span>
+                        </code>
+                    </pre>
+                </div>
+            </div>
+            <h3 id="set-entity-location">
+                <a href="#entities">Set entity location</a>
+            </h3>
+            <p>
+                <code class="language-plaintext highlighter-rouge">set_entity_position(target_entity,coordinates)</code>
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">on_interact_event</span><span class="p">(</span><span class="n">a</span><span class="p">){</span>
+    <span class="c1">//Changes the target entity's coordinates to the target position</span>
+    <span class="c1">//Takes two parameters, a reference to the target entity and a rhai map with x and y coordinates of the target location</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.set_entity_position</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="p">#</span><span class="p">{</span><span class="s">"x"</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="s">"y"</span><span class="p">:</span><span class="mi">1</span><span class="p">});</span>
+<span class="p">}</span>
+                        </code>
+                    </pre>
+                </div>
+            </div>
+            <h3 id="check-item">
+                <a href="#entities">Check item</a>
+            </h3>
+            <p>
+                <code class="language-plaintext highlighter-rouge">inventory_has_item(target_entity,item_type,item_number)</code>
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">on_interact_event</span><span class="p">(</span><span class="n">a</span><span class="p">){</span>
+    <span class="c1">//Returns true if the target has the specified number of items in their inventory</span>
+    <span class="c1">//Takes three parameters, a reference to the target entity, the type of item, and the number of items</span>
+    <span class="k">let</span> <span class="n">has_item</span> <span class="o">=</span> <span class="n">this</span><span class="py">.engine</span><span class="nf">.inventory_has_item</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="s">"log"</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.broadcast_chat_message</span><span class="p">(</span>
+<span class="n">this</span><span class="py">.entity</span><span class="p">,</span><span class="p">`$</span><span class="p">{</span><span class="n">has_item</span><span class="p">}</span><span class="p">`</span><span class="p">);</span>
+<span class="p">}</span>
+                        </code>
+                    </pre>
+                </div>
+            </div>
+            <h3 id="give-item">
+                <a href="#entities">Give item</a>
+            </h3>
+            <p>
+                <code class="language-plaintext highlighter-rouge">inventory_give_item(target_entity,item_type,item_number)</code>
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">on_interact_event</span><span class="p">(</span><span class="n">a</span><span class="p">){</span>
+    <span class="c1">//Adds the specified number of items to a player's inventory</span>
+    <span class="c1">//Takes three parameters, a reference to the target entity, the type of item, and the number of items</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.inventory_give_item</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="s">"log"</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+                        </code>
+                    </pre>
+                </div>
+            </div>
+            <h3 id="remove-item">
+                <a href="#entities">Remove item</a>
+            </h3>
+            <p>
+                <code class="language-plaintext highlighter-rouge">inventory_take_item(target_entity,item_type,item_number)</code>
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">on_interact_event</span><span class="p">(</span><span class="n">a</span><span class="p">){</span>
+    <span class="c1">//Deletes the specified number of items from a player's inventory</span>
+    <span class="c1">//Takes three parameters, a reference to the target entity, the type of item, and the number of items</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.inventory_take_item</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="s">"log"</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+                        </code>
+                    </pre>
+                </div>
+            </div>
+            <h3 id="remove-all-items">
+                <a href="#entities">Remove all items</a>
+            </h3>
+            <p>
+                <code class="language-plaintext highlighter-rouge">inventory_clear(target_entity)</code>
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code>
+<span class="k">fn</span> <span class="nf">on_interact_event</span><span class="p">(</span><span class="n">a</span><span class="p">){</span>
+    <span class="c1">//Deletes the specified number of items from a player's inventory</span>
+    <span class="c1">//Takes one parameter, a reference to the target entity</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">this</span><span class="py">.engine</span><span class="nf">.get_entity_type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">==</span><span class="s">"player"</span><span class="p">){</span>
+        <span class="n">this</span><span class="py">.engine</span><span class="nf">.inventory_clear</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre>
+                </div>
+            </div>
+            <h3 id="create-entity">
+                <a href="#entities">Create entity</a>
+            </h3>
+            <p>
+                <code class="language-plaintext highlighter-rouge">spawn_entity(entity_type,coordinates,properties)</code>
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">on_interact_event</span><span class="p">(</span><span class="n">a</span><span class="p">){</span>
+    <span class="c1">//Creates an entity of a specific type at the specified position</span>
+    <span class="c1">//Takes three parameters, the entity type, the target coordinates, and any additional properties</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.spawn_entity</span><span class="p">(</span><span class="s">"spider"</span><span class="p">,</span><span class="n">this</span><span class="py">.engine</span><span class="nf">.get_entity_position</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="p">#</span><span class="p">{});</span>
+<span class="p">}</span></code></pre>
+                </div>
+            </div>
+            <p>
+                Some examples of properties can be found in <code class="language-plaintext highlighter-rouge">/maps/demo/scripts/components_demo.rhai</code>
+                or the “Gardener 10” script in <code class="language-plaintext highlighter-rouge">/maps/demo/map.tmx</code>
+            </p>
+            <h3 id="send-damage">
+                <a href="#entities">Send damage</a>
+            </h3>
+            <p>
+                <code class="language-plaintext highlighter-rouge">send_damage(source_entity,target_entity,amount)</code>
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">on_interact_event</span><span class="p">(</span><span class="n">a</span><span class="p">){</span>
+    <span class="c1">//Sends the specified damage to target entity from source entity</span>
+    <span class="c1">//Takes three parameters, the source entity, a reference to the target entity, and the amount of damage</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.send_damage</span><span class="p">(</span><span class="n">this</span><span class="py">.entity</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="mf">10.0</span><span class="p">);</span>
+<span class="p">}</span></code></pre>
+                </div>
+            </div>
+            <h1 id="scriptable-entities">Scriptable Entities</h1>
+            <ul>
+                <li>
+                    <a href="#create-timeout">Create timeout</a>
+                </li>
+                <li>
+                    <a href="#call-function">Call function</a>
+                </li>
+                <li>
+                    <a href="#entity-physics">Entity physics</a>
+                </li>
+                <li>
+                    <a href="#get-entity">Get entity</a>
+                </li>
+                <li>
+                    <a href="#set-image">Set image</a>
+                </li>
+                <li>
+                    <a href="#entity-interact">Entity interact</a>
+                </li>
+            </ul>
+            <h3 id="create-timeout">
+                <a href="#scriptable-entities">Create timeout</a>
+            </h3>
+            <p>
+                <code class="language-plaintext highlighter-rouge">register_timeout(entity,callback,timeout)</code>
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">on_interact_event</span><span class="p">(</span><span class="n">a</span><span class="p">){</span>
+    <span class="c1">//Asynchronously executes callback function after the specified time has elapsed</span>
+    <span class="c1">//Takes three parameters, a reference to the target entity, the callback function, and the time to wait</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.register_timeout</span><span class="p">(</span><span class="n">this</span><span class="py">.entity</span><span class="p">,</span><span class="s">"other_function"</span><span class="p">,</span><span class="mf">10.0</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="k">fn</span> <span class="nf">other_function</span><span class="p">(){</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.broadcast_chat_message</span><span class="p">(</span><span class="n">this</span><span class="py">.entity</span><span class="p">,</span><span class="s">"Finished"</span><span class="p">)</span>
+<span class="p">}</span></code></pre>
+                </div>
+            </div>
+            <h2 id="call-function">
+                <a href="#scriptable-entities">Call function</a>
+            </h2>
+            <p>
+                There are two ways to call a function in another scriptable entity, either <a href="#call-function-directly">directly</a>
+                (when target is not pre-defined), or by <a href="#call-function-with-guid">using the target entity’s GUID</a>
+                (when the target is already known)
+            </p>
+            <h3 id="call-function-directly">
+                <a href="#call-function">Call function directly</a>
+            </h3>
+            <p>
+                <code class="language-plaintext highlighter-rouge">send_message(entity,callback,argument)</code>
+            </p>
+            <p>scriptable_entity_1:</p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">on_interact_event</span><span class="p">(</span><span class="n">a</span><span class="p">){</span>
+    <span class="c1">//Executes the callback function inside another entity's scope</span>
+    <span class="c1">//Takes three parameters, a reference to the target entity, the name of the function to execute, and the parameter (rhai Dynamic)</span>
+    <span class="k">let</span> <span class="n">target_entity</span> <span class="o">=</span> <span class="n">this</span><span class="py">.engine</span><span class="nf">.get_entity_by_guid</span><span class="p">(</span><span class="s">"scriptable_entity_2"</span><span class="p">);</span>
+    <span class="k">let</span> <span class="n">chat_content</span> <span class="o">=</span> <span class="s">"Success"</span><span class="p">;</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.send_message</span><span class="p">(</span><span class="n">target_entity</span><span class="p">,</span><span class="s">"other_function"</span><span class="p">,[</span><span class="n">this</span><span class="py">.entity</span><span class="p">,</span><span class="n">chat_content</span><span class="p">,</span><span class="p">]);</span>
+<span class="p">}</span></code></pre>
+                </div>
+            </div>
+            <p>scriptable_entity_2:</p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code>
+<span class="k">fn</span> <span class="nf">other_function</span><span class="p">(</span><span class="n">a</span><span class="p">){</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.broadcast_chat_message</span><span class="p">(</span><span class="n">this</span><span class="py">.entity</span><span class="p">,</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span><span class="n">this</span><span class="py">.engine</span><span class="nf">.broadcast_chat_message</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+<span class="p">}</span></code></pre>
+                </div>
+            </div>
+            <h3 id="call-function-with-guid">
+                <a href="#call-function">Call function with guid</a>
+            </h3>
+            <p>
+                <code class="language-plaintext highlighter-rouge">send_message_by_guid(guid,callback,argument)</code>
+                scriptable_entity_1:
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">on_interact_event</span><span class="p">(</span><span class="n">a</span><span class="p">){</span>
+    <span class="c1">//Executes the callback function inside another entity's scope</span>
+    <span class="c1">//Takes three parameters, a reference to the target entity, the name of the function to execute, and the parameter (rhai Dynamic)</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.send_message_by_guid</span><span class="p">(</span><span class="s">"scriptable_entity_2"</span><span class="p">,</span><span class="s">"other_function"</span><span class="p">,</span><span class="s">"Success"</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="k">fn</span> <span class="nf">other_function_2</span><span class="p">(</span><span class="n">a</span><span class="p">){</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.broadcast_chat_message</span><span class="p">(</span><span class="n">this</span><span class="py">.entity</span><span class="p">,</span><span class="n">a</span><span class="p">);</span>
+<span class="p">}</span></code></pre>
+                </div>
+            </div>
+            <p>scriptable_entity_2:</p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">other_function</span><span class="p">(</span><span class="n">a</span><span class="p">){</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.broadcast_chat_message</span><span class="p">(</span><span class="n">this</span><span class="py">.entity</span><span class="p">,</span><span class="n">a</span><span class="p">);</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.send_message_by_guid</span><span class="p">(</span><span class="s">"scriptable_entity_1"</span><span class="p">,</span><span class="s">"other_function_2"</span><span class="p">,</span><span class="n">a</span><span class="p">);</span>
+<span class="p">}</span></code></pre>
+                </div>
+            </div>
+            <h3 id="entity-physics">
+                <a href="#scriptable-entities">Entity physics</a>
+            </h3>
+            <p>
+                <code class="language-plaintext highlighter-rouge">toggle_entity_physics(target_entity,boolean)</code>
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">on_interact_event</span><span class="p">(</span><span class="n">a</span><span class="p">){</span>
+    <span class="c1">//Sets the target entity's hitbox to either static or non-static depending on the argument</span>
+    <span class="c1">//Takes two parameters, a reference to the target entity and the new boolean value</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.toggle_entity_physics</span><span class="p">(</span><span class="n">this</span><span class="py">.entity</span><span class="p">,</span><span class="k">true</span><span class="p">);</span>
+<span class="p">}</span></code></pre>
+                </div>
+            </div>
+            <h3 id="get-entity">
+                <a href="#scriptable-entities">Get entity</a>
+            </h3>
+            <p>
+                <code class="language-plaintext highlighter-rouge">get_entity_by_guid(globally_unique_identifier)</code>
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">on_interact_event</span><span class="p">(</span><span class="n">a</span><span class="p">){</span>
+    <span class="c1">//Returns a reference to an entity with the specified GUID</span>
+    <span class="c1">//Takes one parameter, the GUID to search for</span>
+    <span class="k">let</span> <span class="n">target</span> <span class="o">=</span> <span class="n">this</span><span class="py">.engine</span><span class="nf">.get_entity_by_guid</span><span class="p">(</span><span class="s">"scriptable_entity_2"</span><span class="p">);</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.broadcast_chat_message</span><span class="p">(</span><span class="n">target</span><span class="p">,</span><span class="s">"Success"</span><span class="p">);</span>
+<span class="p">}</span></code></pre>
+                </div>
+            </div>
+            <h3 id="set-image">
+                <a href="#scriptable-entities">Set image</a>
+            </h3>
+            <p>
+                <code class="language-plaintext highlighter-rouge">set_entity_image(target_entity,filename,scale,layer)</code>
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">on_interact_event</span><span class="p">(</span><span class="n">a</span><span class="p">){</span>
+    <span class="c1">//Changes the displayed image for the target entity</span>
+    <span class="c1">//Takes four parameters, a reference to the target entity, the name (without file extension) of a PNG image in the `/maps/images/` folder, the display scale of the image, and the layer to display the image</span>
+    <span class="k">let</span> <span class="n">scale</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">;</span>
+    <span class="k">let</span> <span class="n">layer</span> <span class="o">=</span> <span class="p">[</span><span class="s">"Bottom"</span><span class="p">,</span><span class="s">"Items"</span><span class="p">,</span><span class="s">"Characters"</span><span class="p">,</span><span class="s">"Default"</span><span class="p">,</span><span class="s">"Top"</span><span class="p">,];</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.set_entity_image</span><span class="p">(</span>
+        <span class="n">this</span><span class="py">.entity</span><span class="p">,</span>
+        <span class="s">"image1"</span><span class="p">,</span>
+        <span class="n">layer</span><span class="nf">.sample</span><span class="p">());</span>
+<span class="p">}</span></code></pre>
+                </div>
+            </div>
+            <h3 id="entity-interact">
+                <a href="#scriptable-entities">Entity interact</a>
+            </h3>
+            <p>
+                <code class="language-plaintext highlighter-rouge">set_entity_interactable(target_entity,boolean)</code>
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">on_interact_event</span><span class="p">(</span><span class="n">a</span><span class="p">){</span>
+    <span class="c1">//Sets interactable component of the target entity</span>
+    <span class="c1">//Takes two parameters, a reference to the target entity and the new boolean value</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.set_entity_interactable</span><span class="p">(</span><span class="n">this</span><span class="py">.entity</span><span class="p">,</span><span class="k">false</span><span class="p">);</span>
+<span class="p">}</span></code></pre>
+                </div>
+            </div>
+            <h1 id="world">World</h1>
+            <ul>
+                <li>
+                    <a href="#convert-coordinates">Convert coordinates</a>
+                </li>
+                <li>
+                    <a href="#get-time">Get time</a>
+                </li>
+                <li>
+                    <a href="#set-time">Set time</a>
+                </li>
+                <li>
+                    <a href="#get-uptime">Get uptime</a>
+                </li>
+            </ul>
+            <h3 id="convert-coordinates">
+                <a href="#world">Convert coordinates</a>
+            </h3>
+            <p>
+                <code class="language-plaintext highlighter-rouge">convert_tiled_coords_to_world(coordinates)</code>
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">init</span><span class="p">(){</span>
+    <span class="c1">//Converts coordinates from [Tiled](https://www.mapeditor.org/) map editor to in-game units</span>
+    <span class="c1">//Takes one parameter, a rhai map with x and y coordinates from Tiled</span>
+    <span class="k">let</span> <span class="n">temp</span> <span class="o">=</span> <span class="p">#</span><span class="p">{</span><span class="s">"x"</span><span class="p">:</span><span class="mi">3000</span><span class="p">,</span><span class="s">"y"</span><span class="p">:</span><span class="mi">20000</span><span class="p">};</span>
+    <span class="n">this</span><span class="py">.target_coordinates</span> <span class="o">=</span> <span class="n">this</span><span class="py">.engine</span><span class="nf">.convert_tiled_coords_to_world</span><span class="p">(</span><span class="n">temp</span><span class="p">);</span>
+<span class="p">}</span></code></pre>
+                </div>
+            </div>
+            <h3 id="get-time">
+                <a href="#world">Get time</a>
+            </h3>
+            <p>
+                <code class="language-plaintext highlighter-rouge">get_daytime_hour()</code>
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">on_interact_event</span><span class="p">(</span><span class="n">a</span><span class="p">){</span>
+    <span class="c1">//Returns the in-game time</span>
+    <span class="c1">//Takes no parameters</span>
+    <span class="k">let</span> <span class="n">time</span> <span class="o">=</span> <span class="n">this</span><span class="py">.engine</span><span class="nf">.get_daytime_hour</span><span class="p">();</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.broadcast_chat_message</span><span class="p">(</span><span class="n">this</span><span class="py">.entity</span><span class="p">,</span><span class="n">time</span><span class="p">);</span>
+<span class="p">}</span></code></pre>
+                </div>
+            </div>
+            <h3 id="set-time">
+                <a href="#world">Set time</a>
+            </h3>
+            <p>
+                <code class="language-plaintext highlighter-rouge">set_daytime_hour()</code>
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">on_interact_event</span><span class="p">(</span><span class="n">a</span><span class="p">){</span>
+    <span class="c1">//Changes the in-game time</span>
+    <span class="c1">//Takes one parameter, the time to change to</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.set_daytime_hour</span><span class="p">(</span><span class="mi">24</span><span class="p">);</span>
+<span class="p">}</span></code></pre>
+                </div>
+            </div>
+            <h3 id="get-uptime">
+                <a href="#world">Get uptime</a>
+            </h3>
+            <p>
+                <code class="language-plaintext highlighter-rouge">get_server_time()</code>
+            </p>
+            <div class="language-rs highlighter-rouge">
+                <div class="highlight">
+                    <pre class="highlight"><code><span class="k">fn</span> <span class="nf">on_interact_event</span><span class="p">(</span><span class="n">a</span><span class="p">){</span>
+    <span class="c1">//Returns the server uptime</span>
+    <span class="c1">//Takes no parameters</span>
+    <span class="k">let</span> <span class="n">uptime</span> <span class="o">=</span> <span class="n">this</span><span class="py">.engine</span><span class="nf">.get_server_time</span><span class="p">();</span>
+    <span class="n">this</span><span class="py">.engine</span><span class="nf">.broadcast_chat_message</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="p">`$</span><span class="p">{</span><span class="n">uptime</span><span class="p">}</span><span class="p">`</span>
+<span class="p">);</span></code></pre>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
+        <script>
+            anchors.add();
+        </script>
+    </body>
+</html>
